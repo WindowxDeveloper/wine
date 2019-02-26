@@ -2,6 +2,7 @@
  * Server-side file mapping management
  *
  * Copyright (C) 1999 Alexandre Julliard
+ * Copyright 2019 Timothy Pearson <tpearson@raptorengineering.com> (PowerPC 64)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -614,7 +615,7 @@ static unsigned int get_image_params( struct mapping *mapping, file_pos_t file_s
         case IMAGE_FILE_MACHINE_POWERPC:
             mapping->image.cpu = CPU_POWERPC;
             break;
-            if (cpu_mask & CPU_FLAG(CPU_POWERPC)) break;
+            if (cpu_mask & (CPU_FLAG(CPU_POWERPC) | CPU_FLAG(CPU_POWERPC64))) break;
             return STATUS_INVALID_IMAGE_FORMAT;
         default:
             return STATUS_INVALID_IMAGE_FORMAT;
@@ -657,6 +658,10 @@ static unsigned int get_image_params( struct mapping *mapping, file_pos_t file_s
             mapping->image.cpu = CPU_ARM64;
             break;
             if (cpu_mask & (CPU_FLAG(CPU_ARM) | CPU_FLAG(CPU_ARM64))) break;
+            return STATUS_INVALID_IMAGE_FORMAT;
+        case IMAGE_FILE_MACHINE_POWERPC64:
+            mapping->image.cpu = CPU_POWERPC64;
+            if (cpu_mask & (CPU_FLAG(CPU_POWERPC) | CPU_FLAG(CPU_POWERPC64))) break;
             return STATUS_INVALID_IMAGE_FORMAT;
         default:
             return STATUS_INVALID_IMAGE_FORMAT;
